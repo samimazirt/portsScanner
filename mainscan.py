@@ -2,89 +2,40 @@ import sys
 import arp
 import icmp
 from colorama import Fore, Style
+from model import parse_arguments
 
+import sys
 
 if (len(sys.argv)) == 1:
     sys.exit("Too few arguments")
+
+if len(sys.argv) == 3 and (sys.argv[1] == "-a" or sys.argv[1] == "--arp") or (sys.argv[1] == "-i" or sys.argv[1] == "--icmp"):
+    ip_argument = sys.argv[2]
+    result = parse_arguments(ip_argument)
+    print(result)
+else:
+    print("Usage: python main.py -a <ip_argument>")
+
+'''if ((sys.argv[1]) == "-a" or (sys.argv[1]) == "--arp") and len(sys.argv) == 4:
+    adresse_cible = parse_argument(sys.argv[2], sys.argv[3])
+    arp.art(adresse_cible)
+'''
+##print(str(sys.argv[2]))
 
 
 
 
 if ((sys.argv[1]) == "-a" or (sys.argv[1]) == "--arp") and len(sys.argv) == 3:
-    r = sys.argv[2]
-
-    le = len(r)
-    i = 0
-
-    sep = ""
-    while i < le:
-        if r[i] == '/' or r[i] == '-':
-            
-            if r[i] == '-':
-                sep = 'tir'
-            elif r[i] == '/':
-                sep = "sla"
-        i+= 1
-    if sep == "tir":
-        i = le - 1
-        while r[i] != '.':
-            i -= 1
-        num = ""
-        i += 1
-        e = i
-        while i < le:
-            num += r[i]
-            i += 1
-        i = 0
-        ad = ""
-        while r[i] != '-':
-            ad += r[i]
-            i += 1
-        ad += '/'
-        ad += num
-        r = ad
- 
-    arp.art(r)
+    arp.art(result)
 
 
 
 elif ((sys.argv[1]) == "-i" or (sys.argv[1]) == "--icmp") and len(sys.argv) == 3:
-    r = sys.argv[2]
-    le = len(r)
-    i = 0
-    typ = 1
-    sep = ""
-    while i < le:
-        if r[i] == '/' or r[i] == '-':
-            typ = 2
-            if r[i] == '-':
-                sep = 'tir'
-            elif r[i] == '/':
-                sep = "sla"
-        i+= 1
-    if typ == 2 and sep == "tir":
-        i = le - 1
-        while r[i] != '.':
-            i -= 1
-        num = ""
-        i += 1
-        e = i
-        while i < le:
-            num += r[i]
-            i += 1
-        i = 0
-        ad = ""
-        while r[i] != '-':
-            ad += r[i]
-            i += 1
-        ad += '/'
-        ad += num
-        r = ad
-    icmp.ic(r, typ)   
+    icmp.ic(result)
 
 
 
-
+'''
 elif ((sys.argv[1]) == "-t" or (sys.argv[1]) == "--tcp") and (len(sys.argv) == 3 or len(sys.argv) == 5):
     print("tcp")
 
@@ -109,3 +60,4 @@ else:
     print(Fore.YELLOW + " - For ICMP scan of a range of IP addresses:\n"+ Style.RESET_ALL )
     print("python3 main.py -i x.x.x.x/x OR python3 project.py -i x.x.x.x-x.x.x.x\n\n\n")
    
+'''
