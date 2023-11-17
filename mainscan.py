@@ -1,8 +1,6 @@
 import sys
 import arp
 import icmp
-import tcp
-import udp
 from colorama import Fore, Style
 
 
