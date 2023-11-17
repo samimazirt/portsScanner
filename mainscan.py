@@ -9,29 +9,25 @@ import sys
 if (len(sys.argv)) == 1:
     sys.exit("Too few arguments")
 
-if len(sys.argv) == 3 and (sys.argv[1] == "-a" or sys.argv[1] == "--arp") or (sys.argv[1] == "-i" or sys.argv[1] == "--icmp"):
+parsed_args = parse_arguments()
+print(parsed_args)
+
+'''if len(sys.argv) == 3 and (sys.argv[1] == "-a" or sys.argv[1] == "--arp") or (sys.argv[1] == "-i" or sys.argv[1] == "--icmp"):
     ip_argument = sys.argv[2]
     result = parse_arguments(ip_argument)
     print(result)
 else:
     print("Usage: python main.py -a <ip_argument>")
-
-'''if ((sys.argv[1]) == "-a" or (sys.argv[1]) == "--arp") and len(sys.argv) == 4:
-    adresse_cible = parse_argument(sys.argv[2], sys.argv[3])
-    arp.art(adresse_cible)
 '''
 ##print(str(sys.argv[2]))
 
+# ARP scan
+if parsed_args['scan_type'] == 'a':
+    arp.art(parsed_args)
 
-
-
-if ((sys.argv[1]) == "-a" or (sys.argv[1]) == "--arp") and len(sys.argv) == 3:
-    arp.art(result)
-
-
-
-elif ((sys.argv[1]) == "-i" or (sys.argv[1]) == "--icmp") and len(sys.argv) == 3:
-    icmp.ic(result)
+# ICMP scan
+elif parsed_args['scan_type'] == 'i':
+    icmp.ic(parsed_args)
 
 
 
