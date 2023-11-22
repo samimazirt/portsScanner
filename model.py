@@ -1,10 +1,35 @@
 import argparse
 import ipaddress
+import sys
+import logging
+
+logging.basicConfig(level=logging.DEBUG, format='%(asctime)s - %(levelname)s - %(message)s')
+
+
+def is_valid_ip(ip):
+    try:
+        ipaddress.ip_address(ip)
+        return True
+    except ValueError:
+        return False
+
+def is_valid_ports(ports):
+    try:
+        port_list = [int(port) for port in ports.split(',')]
+        for port in port_list:
+            if not (0 < port < 65536):
+                return False
+        return True
+    except ValueError:
+        return False
+
 
 def parse_ip_arg(ip_arg):
     # initialize ip list to return
     ip_list = []
-
+    if not is_valid_ip(ip_arg):
+        logging.error('Not valid IP')
+        sys.exit(1)   
     if ',' in ip_arg:
         ip_list = ip_arg.split(',')
     elif '/' in ip_arg:
@@ -46,7 +71,9 @@ def parse_ports_arg(ports_arg):
     # if no port Specified, return none
     if not ports_arg:
         return None
-
+    if not is_valid_ports(ports_arg):
+        logging.error('Not valid ports')
+        sys.exit(1)    
     # port list to return
     ports_list = []
 
@@ -57,7 +84,7 @@ def parse_ports_arg(ports_arg):
         if len(parts) == 2 and parts[0].isdigit() and parts[1].isdigit():
             ports_list = list(map(str, range(int(parts[0]), int(parts[1]) + 1)))
         else:
-            raise ValueError('Invalid port range format')
+            logging.error('Invalid port range format')
     else:
         ports_list.append(ports_arg)
 

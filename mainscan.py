@@ -8,6 +8,7 @@ import sys
 
 if (len(sys.argv)) == 1:
     sys.exit("Too few arguments")
+    
 
 parsed_args = parse_arguments()
 print(parsed_args)
