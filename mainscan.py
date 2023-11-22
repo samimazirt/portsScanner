@@ -2,6 +2,7 @@ import sys
 import arp
 import icmp
 import udp
+import tcp
 from colorama import Fore, Style
 from model import parse_arguments
 
@@ -24,10 +25,8 @@ elif parsed_args['scan_type'] == 'i':
 
 elif parsed_args['scan_type'] == 'u':
     udp.ud(parsed_args)
-'''
 elif parsed_args['scan_type'] == 't':
-    icmp.ic(parsed_args)
-'''
+    tcp.tc(parsed_args)
 '''
 
 else:
