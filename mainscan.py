@@ -1,6 +1,7 @@
 import sys
 import arp
 import icmp
+import udp
 from colorama import Fore, Style
 from model import parse_arguments
 
@@ -12,15 +13,6 @@ if (len(sys.argv)) == 1:
 parsed_args = parse_arguments()
 print(parsed_args)
 
-'''if len(sys.argv) == 3 and (sys.argv[1] == "-a" or sys.argv[1] == "--arp") or (sys.argv[1] == "-i" or sys.argv[1] == "--icmp"):
-    ip_argument = sys.argv[2]
-    result = parse_arguments(ip_argument)
-    print(result)
-else:
-    print("Usage: python main.py -a <ip_argument>")
-'''
-##print(str(sys.argv[2]))
-
 # ARP scan
 if parsed_args['scan_type'] == 'a':
     arp.art(parsed_args)
@@ -29,17 +21,13 @@ if parsed_args['scan_type'] == 'a':
 elif parsed_args['scan_type'] == 'i':
     icmp.ic(parsed_args)
 
-
-
+elif parsed_args['scan_type'] == 'u':
+    udp.ud(parsed_args)
 '''
-elif ((sys.argv[1]) == "-t" or (sys.argv[1]) == "--tcp") and (len(sys.argv) == 3 or len(sys.argv) == 5):
-    print("tcp")
-
-
-
-
-elif ((sys.argv[1]) == "-u" or (sys.argv[1]) == "--udp") and (len(sys.argv) == 3 or len(sys.argv) == 5):
-    print("udp")
+elif parsed_args['scan_type'] == 't':
+    icmp.ic(parsed_args)
+'''
+'''
 
 else:
     print(Fore.RED + "\n\n-----------INVALID Command----------\n" + Style.RESET_ALL)

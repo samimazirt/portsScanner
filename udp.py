@@ -1,96 +1,38 @@
-from colorama import Fore, Back, Style
-from socket import *
-import sys
 import socket
+from colorama import Fore, Back, Style
+from model import parse_arguments
 
+def ud(scan_info):
+    ip = scan_info['ip'][0]
+    ports = scan_info['ports']
 
+    open_ports = []
+    closed_ports = []
 
-def dc(host,ports):
-    MESSAGE = "Ping test"
-    s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM, socket.IPPROTO_UDP)
-    socket.setdefaulttimeout(1)
-
-    if s == -1:
-        print("socket creation failed")
-    so = socket.socket(AF_INET,SOCK_RAW,IPPROTO_ICMP)
-    if so == -1:
-        print("icmp creation failed")
-
-    opened = False
-    try:
-        s.sendto(MESSAGE.encode('utf_8'), (host, ports))
-        so.settimeout(1)
-        data, addr = so.recvfrom(1024)
-    except timeout:
+    for port in ports:
         try:
-            se = socket.getservbyport(ports, 'udp')
-            if not se:
-                pass
-            else:
-                opened = True
-                print("\nPort " + str(ports) + ":" + Fore.GREEN + " OPENED".format(ports) + Style.RESET_ALL)
-                try:
-                    name = socket.getservbyport(ports, "udp")
-                    print("Service: " + name)
-                except:
-                    print(Fore.YELLOW + "No service found for the " + str(ports) + " port")
-                    print(Style.RESET_ALL)
-        except:
-            pass
+            sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+            sock.settimeout(1)
+            sock.sendto(b'', (ip, int(port)))
+            data, addr = sock.recvfrom(1024)
+            open_ports.append(port)
+            print(f"Port {port}/UDP on {ip} is open.")
+        except socket.timeout:
+            closed_ports.append(port)
+            print(f"Port {port}/UDP on {ip} is closed.")
+        finally:
+            sock.close()
+    print_results(ip, open_ports, closed_ports)
 
-    except error as sock_err:
-        if (sock_err.errno == sock_err.errno.ECONNREFUSED):
-            print(sock_err("Connection refused"))
-        s.close()
-        so.close()
+def print_results(ip, open_ports, closed_ports):
+    print(f"\nUDP Scan Results for {ip}:")
 
-    if opened == False:
-        print("\nPort " + str(ports) + ":" + Fore.RED + " CLOSED".format(ports) + Style.RESET_ALL)
-        try:
-            name = socket.getservbyport(ports, "udp")
-            print("Service: " + name)
-        except:
-            print(Fore.YELLOW + "No service found for the " + str(ports) + " port")
-            print(Style.RESET_ALL)
+    if open_ports:
+        print("Open ports:")
+        for port in open_ports:
+            print(f"  {port}/UDP is open.")
 
- 
-
-
-    
-def ud(n, typ, ports):
-    if typ == 1:
-        print("\n--------------------IP Address: " + str(n) + " ---------------------------")
-        for i in ports:
-            dc(n,int(i))
-
-    if typ == 2:
-        i = 0
-        deb = ""
-        while n[i] != '/':
-            deb+=n[i]
-            i += 1
-        l = len(n) - 1
-        fin = ""
-        v = i + 1
-        while v < l + 1:
-            fin += n[v]
-            v += 1
-        while n[i] != '.':
-            i -= 1
-        i += 1
-        mid = ""
-        o = 0
-        address = ""
-        while o < i:
-            address += n[o]
-            o += 1
-        while n[i] != '/':
-            mid += n[i]
-            i += 1
-        mid1 = int(mid)
-        fin1 = int(fin)
-        for i in range(mid1, fin1 + 1):
-            add = address + str(i)
-            print("\n--------------------IP Address: " + add + " ---------------------------")
-            for ii in ports:
-                dc(add,int(ii))   
+    if closed_ports:
+        print("Closed ports:")
+        for port in closed_ports:
+            print(f"  {port}/UDP is closed.")

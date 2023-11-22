@@ -10,17 +10,16 @@ Fonctionnalités
 
 Le script doit prendre en charge les fonctionnalités suivantes : 
 
-    * Accepter une adresse IP, une plage d'adresses IP ou une notation CIDR en tant que paramètre d'entrée. Exemples: script.py -x 192.168.1.7, script.py -x 192.168.1.7-192.168.1.19, script.py -x 192.168.1.0/24. 
-
+    * Accepter une adresse IP, une plage d'adresses IP ou une notation CIDR en tant que paramètre d'entrée. Exemples: mainscan.py -x [a,i,u,t] -ip 192.168.1.7-192.168.1.19 -p 89
     * Prendre en charge les types de scans suivants : 
 
-    	- ARP scan avec l'option "-a" ou "--arp". 
+    	- ARP scan avec l'option "-x a".
 
-    	- ICMP scan avec l'option "-1" ou "--icmp". 
+    	- ICMP scan avec l'option "-x i".
 
-    	- TCP scan avec l'option "-t" ou "--tcp". 
+    	- TCP scan avec l'option "-x t".
 
-    	- UDP scan avec l'option "-u" ou "--udp". 
+    	- UDP scan avec l'option "-x u".
 
     * Si l'utilisateur utilise les options -t ou -u, accepter le paramètre -p pour spécifier les ports à scanner. Les notations de ports suivantes doivent être prises en charge: 
 
