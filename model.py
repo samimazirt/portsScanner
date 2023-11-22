@@ -68,11 +68,9 @@ def parse_arguments():
     }
 
 def parse_ports_arg(ports_arg):
-
     # if no port Specified, return none
     if not ports_arg:
         return None
-
     if not is_valid_ports(ports_arg):
         logging.error('Not valid ports')
         sys.exit(1)    

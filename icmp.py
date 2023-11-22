@@ -2,10 +2,11 @@ import subprocess
 from colorama import Fore, Back, Style
 from scapy.all import *
 from scapy.layers.inet import ICMP, IP
+
 import logging
 
-logging.basicConfig(level=logging.DEBUG, format='%(asctime)s - %(levelname)s - %(message)s')
 
+logging.basicConfig(level=logging.DEBUG, format='%(asctime)s - %(levelname)s - %(message)s')
 
 
 def ic(ip_list):
@@ -28,4 +29,6 @@ def ic(ip_list):
 
     print("\n\n\n")
     print("----------ICMP Scan Results----------\n\n")
+
     logging.info(toprint)
+
