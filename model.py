@@ -27,9 +27,7 @@ def is_valid_ports(ports):
 def parse_ip_arg(ip_arg):
     # initialize ip list to return
     ip_list = []
-    if not is_valid_ip(ip_arg):
-        logging.error('Not valid IP')
-        sys.exit(1)   
+     
     if ',' in ip_arg:
         ip_list = ip_arg.split(',')
     elif '/' in ip_arg:
@@ -47,6 +45,11 @@ def parse_ip_arg(ip_arg):
             start_ip_obj += 1
     else:
         ip_list.append(ip_arg)
+    
+    for i in ip_list: #check si chaque element de la liste est bien une ip
+        if not is_valid_ip(i):
+            logging.error('Not valid IP')
+            sys.exit(1)  
 
     return ip_list
 
