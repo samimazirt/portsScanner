@@ -8,8 +8,8 @@ from scapy.layers.l2 import ARP, Ether, srp
 
 def art(n):
     print("\n*************** ARP SCAN ***************\n")
-
     for add in n['ip']:
+
         request = ARP()
         request.pdst = add
 

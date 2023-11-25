@@ -66,6 +66,13 @@ Le projet doit inclure les éléments suivants :
     * Présentation. 
 
 ########################################
+Création d'executable
+
+Pour génerer l'executable: 
+     
+     pyinstaller --onefile script.py
+     l'executable se trouve dans dist/
+########################################
 
 Calendrier 
 

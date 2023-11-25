@@ -23,7 +23,7 @@ def sc(i,j):
 # On essaie de se connecter à un port, si la reponse est 0 le port est ouvert
     if st == 0:
         print("Port " + str(ports) + ":" + Fore.GREEN + " OPENED".format(ports) + Style.RESET_ALL)
-        #We use 'try', so if there is a service behind an opened port, we display it,and if not, there aren't any error
+        #On utilise try pour eviter les erreurs si jamais la recherche ne donne rien
     else:
          print("Port " + str(ports) + ":" + Fore.RED + " CLOSED".format(ports) + Style.RESET_ALL)
     try:
@@ -38,6 +38,7 @@ def sc(i,j):
 def tc(scan_info):
     host = scan_info['ip']
     ports = scan_info['ports']
+    #on appelle la fonction pour toutes les IP de la liste
     for i in host:
         print("\nIP ADDRESS: " + str(i))
         for j in ports:
