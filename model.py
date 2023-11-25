@@ -5,7 +5,7 @@ import logging
 
 logging.basicConfig(level=logging.DEBUG, format='%(asctime)s - %(levelname)s - %(message)s')
 
-
+#verifie que l'IP existe bien
 def is_valid_ip(ip):
     try:
         ipaddress.ip_address(ip)
@@ -13,6 +13,7 @@ def is_valid_ip(ip):
     except ValueError:
         return False
 
+#Verifie que les ports sont bien valides
 def is_valid_ports(ports):
     try:
         port_list = [int(port) for port in ports.split(',')]
@@ -31,12 +32,11 @@ def parse_ip_arg(ip_arg):
     if ',' in ip_arg:
         ip_list = ip_arg.split(',')
     elif '/' in ip_arg:
-        # CIDR notation
         ip_list = [str(ip) for ip in ipaddress.IPv4Network(ip_arg, strict=False)]
     elif '-' in ip_arg:
         start_ip, end_ip = ip_arg.split('-')
 
-        # create a list of ip addresses in the range
+        # cree une liste d'addresses
         start_ip_obj = ipaddress.IPv4Address(start_ip)
         end_ip_obj = ipaddress.IPv4Address(end_ip)
 
@@ -60,7 +60,7 @@ def parse_arguments():
     parser.add_argument('-x', '--scan-type', required=True, choices=['a', 'i', 'u', 't'], help='Specify scan type (a, i, u, t)')
     # ip address
     parser.add_argument('-ip', '--ip', required=True, help='Input IP address, IP range, or CIDR notation')
-    # port if needed
+    # port si besoin
     parser.add_argument('-p', '--ports', help='Specify ports to scan')
 
     args = parser.parse_args()
