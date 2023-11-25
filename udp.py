@@ -1,43 +1,40 @@
-import socket
-from colorama import Fore, Back, Style
-from model import parse_arguments
+from colorama import Fore, Style
+from scapy.all import *
+import logging
 
-def ud(scan_info):
-    ip = scan_info['ip'][0]
-    ports = scan_info['ports']
-    #recup d'IP et des ports
+def ud(model):
+
+    #recup IP et des ports
+    ip = model['ip'][0]
+    ports = model['ports']
 
     open_ports = []
     closed_ports = []
-    #
+
+    toprint = f"\nIP ADDRESS: {str(ip)}\n"
+
     for port in ports:
+        int_port = int(port)
+        # UDP packet
+        packet = IP(dst=ip) / UDP(dport=int_port)
+
         try:
-            #on cree u socket de type DGRAM, c'est ce type qui est utilisé dans UDP
-            sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-            #attente d'1 seconde
-            sock.settimeout(1)
-            #envoi du message
-            sock.sendto(b'', (ip, int(port)))
-            data, addr = sock.recvfrom(1024)
-            #si aucune exeption n'est trigger, cela signifie que les données ont bien été recues
-            open_ports.append(port)
-            print(f"Port {port}/UDP on {ip} is open.")
-        except socket.timeout:
-            closed_ports.append(port)
-            print(f"Port {port}/UDP on {ip} is closed.")
-        finally:
-            sock.close()
-    print_results(ip, open_ports, closed_ports)
+            # envoi du packet et attente de la réponse
+            response = sr1(packet, timeout=1, verbose=False)
 
-def print_results(ip, open_ports, closed_ports):
-    print(f"\nUDP Scan Results for {ip}:")
+            # vérifie si réponse
+            if response and response.haslayer(UDP):
+                open_ports.append(int_port)
+                toprint += f"\nPort {int_port} is {Fore.GREEN}OPENED{Style.RESET_ALL}.\n"
+            else:
+                closed_ports.append(int_port)
+                toprint += f"\nPort {int_port} is {Fore.RED}CLOSED{Style.RESET_ALL}.\n"
 
-    if open_ports:
-        print("Open ports:")
-        for port in open_ports:
-            print(f"  {port}/UDP is open.")
+        # toutes exception = port fermé
+        except Exception as e:
+            closed_ports.append(int_port)
+            toprint += f"\nPort {int_port} is {Fore.RED}CLOSED{Style.RESET_ALL}.\n"
 
-    if closed_ports:
-        print("Closed ports:")
-        for port in closed_ports:
-            print(f"  {port}/UDP is closed.")
+    print("\n\n\n")
+    print(f"----------UDP Scan Results----------\n")
+    logging.info(toprint)

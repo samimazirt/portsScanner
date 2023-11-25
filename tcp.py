@@ -1,46 +1,47 @@
-import subprocess
-from colorama import Fore, Back, Style
-from scapy.all import *
-from scapy.layers.inet import ICMP, IP
+from colorama import Fore, Style
 import logging
-from socket import *
-import sys
-import socket
-from socket import getservbyname, getservbyport
-from model import parse_arguments
+from scapy.all import *
 
-
-
-def sc(i,j):
+def sc(i, j, toprint):
     host = i
-    ports = int(j)
+    port = int(j)
 
-    trg = socket.gethostbyname(host)
-    s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    socket.setdefaulttimeout(1)
-    st = s.connect_ex((trg,ports))
-    
-# On essaie de se connecter à un port, si la reponse est 0 le port est ouvert
-    if st == 0:
-        print("Port " + str(ports) + ":" + Fore.GREEN + " OPENED".format(ports) + Style.RESET_ALL)
-        #On utilise try pour eviter les erreurs si jamais la recherche ne donne rien
+    # on construit le TCP SYN packet
+    packet = IP(dst=host) / TCP(dport=port, flags='S')
+
+    # envoi du packet et attente de la réponse
+    response = sr1(packet, timeout=1, verbose=False)
+
+    # vérifie si réponse
+    if response and response.haslayer(TCP):
+        # vérifie si le flag tcp indique un port ouvert
+        if response[TCP].flags == 18:  # 18 => SYN-ACK
+            toprint += f"Port {port} is {Fore.GREEN}OPENED{Style.RESET_ALL}.\n"
+        else:
+            toprint += f"Port {port} is {Fore.RED}CLOSED{Style.RESET_ALL}.\n"
     else:
-         print("Port " + str(ports) + ":" + Fore.RED + " CLOSED".format(ports) + Style.RESET_ALL)
+        toprint += f"Port {port} is {Fore.RED}CLOSED{Style.RESET_ALL}.\n"
+
+    # récupère service
     try:
-            #On précise le protocole derrière le port
-        name = socket.getservbyport(ports, "tcp")
-        print("Service: " + name)
+        name = socket.getservbyport(port, "tcp")
+        toprint += f"Service: {name}\n"
     except:
-        print(Fore.YELLOW + "No service found for the " + " port " + str(ports) + Style.RESET_ALL)
-    s.close()
-    print ("\n")
+        toprint += f"{Fore.YELLOW}No service found for port {port}{Style.RESET_ALL}.\n"
 
-def tc(scan_info):
-    host = scan_info['ip']
-    ports = scan_info['ports']
-    #on appelle la fonction pour toutes les IP de la liste
-    for i in host:
-        print("\nIP ADDRESS: " + str(i))
-        for j in ports:
-            sc(i,j)
+    return toprint
 
+def tc(model):
+    hosts = model['ip']
+    ports = model['ports']
+    toprint = ""
+
+    for host in hosts:
+        toprint += f"\nIP ADDRESS: {str(host)}\n\n"
+        for port in ports:
+            toprint = sc(host, port, toprint)
+            toprint += '\n'
+
+    print("\n\n\n")
+    print(f"----------TCP Scan Results----------\n")
+    logging.info(toprint)
