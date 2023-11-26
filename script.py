@@ -15,9 +15,11 @@ def execute_scan():
     # Vérifier si le scan est ICMP ou ARP pour ne pas inclure de port
     if scan_type_code in ["i", "a"]:
         port = ""
+        command = f"sudo python3 mainscan.py -x {scan_type_code} -i {ip_address}"
+    else:
 
-    # Construire la commande pour exécuter le scan
-    command = f"sudo python3 mainscan.py -x {scan_type_code} -i {ip_address} -p {port}"
+        # Construire la commande pour exécuter le scan
+        command = f"sudo python3 mainscan.py -x {scan_type_code} -i {ip_address} -p {port}"
     result = subprocess.getoutput(command)
 
     # Afficher la zone d'output, effacer son contenu et y insérer le résultat
