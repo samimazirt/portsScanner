@@ -9,8 +9,12 @@ def execute_scan():
     port = port_entry.get()
 
     # Correspondre chaque scan à sa lettre (pour l'execution de la ligne de commande)
-    scan_type_mapping = {"TCP": "t", "UDP": "u"}
+    scan_type_mapping = {"TCP": "t", "UDP": "u", "ARP": "a", "ICMP": "i"}
     scan_type_code = scan_type_mapping.get(scan_type, "")
+
+    # Vérifier si le scan est ICMP ou ARP pour ne pas inclure de port
+    if scan_type_code in ["i", "a"]:
+        port = ""
 
     # Construire la commande pour exécuter le scan
     command = f"sudo python3 mainscan.py -x {scan_type_code} -i {ip_address} -p {port}"
@@ -28,11 +32,11 @@ def clear_output():
     output_text.config(state=tk.DISABLED)
 
 def new_scan():
-    # Effacer l'output, les champs IP et port, et définir le type de scan sur TCP par défaut
+    # Effacer l'output, les champs IP et port, et définir le type de scan sur ICMP par défaut
     clear_output()
     ip_address_entry.delete(0, tk.END)
     port_entry.delete(0, tk.END)
-    scan_type_combobox.set("TCP")
+    scan_type_combobox.set("ICMP")
 
 # Créer la fenêtre principale
 root = tk.Tk()
@@ -49,8 +53,8 @@ output_text_font = tk.font.Font(family='Courier', size=10)
 # Créer et positionner les widgets et boutons
 scan_type_label = ttk.Label(root, text="Type de Scan :")
 scan_type_var = tk.StringVar()
-scan_type_combobox = ttk.Combobox(root, textvariable=scan_type_var, values=["TCP", "UDP"])
-scan_type_combobox.set("TCP")
+scan_type_combobox = ttk.Combobox(root, textvariable=scan_type_var, values=["ICMP", "TCP", "UDP", "ARP"])
+scan_type_combobox.set("ICMP")
 
 ip_address_label = ttk.Label(root, text="Entrer l'Adresse IP ou la Plage :")
 ip_address_entry = ttk.Entry(root, font=('Arial', 12))
