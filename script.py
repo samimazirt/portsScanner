@@ -3,20 +3,26 @@ from tkinter import ttk, font
 import subprocess
 
 def execute_scan():
-    #recup de chaque champ
+    # Recup de chaque champ
     scan_type = scan_type_var.get()
     ip_address = ip_address_entry.get()
     port = port_entry.get()
 
-    # correspondre chaque scan à sa lettre (pour l'execution de la ligne de commande)
-    scan_type_mapping = {"ICMP": "i", "TCP": "t", "UDP": "u", "ARP": "a"}
+    # Correspondre chaque scan à sa lettre (pour l'execution de la ligne de commande)
+    scan_type_mapping = {"TCP": "t", "UDP": "u", "ARP": "a", "ICMP": "i"}
     scan_type_code = scan_type_mapping.get(scan_type, "")
 
-    # Construire la commande pour exécuter le scan
-    command = f"sudo python3 mainscan.py -x {scan_type_code} -i {ip_address} -p {port}"
+    # Vérifier si le scan est ICMP ou ARP pour ne pas inclure de port
+    if scan_type_code in ["i", "a"]:
+        port = ""
+        command = f"sudo python3 mainscan.py -x {scan_type_code} -i {ip_address}"
+    else:
+
+        # Construire la commande pour exécuter le scan
+        command = f"sudo python3 mainscan.py -x {scan_type_code} -i {ip_address} -p {port}"
     result = subprocess.getoutput(command)
 
-    # afficher la zone d'output', effacer son contenu et y insérer le résultat
+    # Afficher la zone d'output, effacer son contenu et y insérer le résultat
     output_text.config(state=tk.NORMAL)
     output_text.delete(1.0, tk.END)
     output_text.insert(tk.END, f"{result}")
@@ -86,6 +92,4 @@ new_scan_button.grid(row=6, column=0, columnspan=2, pady=10)
 
 # Exécuter la boucle principale de Tkinter
 root.mainloop()
-
-
 

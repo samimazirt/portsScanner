@@ -77,6 +77,7 @@ def parse_arguments():
     # Analyse des ports à scanner (optionnel)
     parser.add_argument(
         '-p', '--ports',
+        required=False,
         help='Specify ports to scan'
         )
 
