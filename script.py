@@ -3,20 +3,20 @@ from tkinter import ttk, font
 import subprocess
 
 def execute_scan():
-    #recup de chaque champ
+    # Recup de chaque champ
     scan_type = scan_type_var.get()
     ip_address = ip_address_entry.get()
     port = port_entry.get()
 
-    # correspondre chaque scan à sa lettre (pour l'execution de la ligne de commande)
-    scan_type_mapping = {"ICMP": "i", "TCP": "t", "UDP": "u", "ARP": "a"}
+    # Correspondre chaque scan à sa lettre (pour l'execution de la ligne de commande)
+    scan_type_mapping = {"TCP": "t", "UDP": "u"}
     scan_type_code = scan_type_mapping.get(scan_type, "")
 
     # Construire la commande pour exécuter le scan
     command = f"sudo python3 mainscan.py -x {scan_type_code} -i {ip_address} -p {port}"
     result = subprocess.getoutput(command)
 
-    # afficher la zone d'output', effacer son contenu et y insérer le résultat
+    # Afficher la zone d'output, effacer son contenu et y insérer le résultat
     output_text.config(state=tk.NORMAL)
     output_text.delete(1.0, tk.END)
     output_text.insert(tk.END, f"{result}")
@@ -28,11 +28,11 @@ def clear_output():
     output_text.config(state=tk.DISABLED)
 
 def new_scan():
-    # Effacer l'output, les champs IP et port, et définir le type de scan sur ICMP par défaut
+    # Effacer l'output, les champs IP et port, et définir le type de scan sur TCP par défaut
     clear_output()
     ip_address_entry.delete(0, tk.END)
     port_entry.delete(0, tk.END)
-    scan_type_combobox.set("ICMP")
+    scan_type_combobox.set("TCP")
 
 # Créer la fenêtre principale
 root = tk.Tk()
@@ -49,8 +49,8 @@ output_text_font = tk.font.Font(family='Courier', size=10)
 # Créer et positionner les widgets et boutons
 scan_type_label = ttk.Label(root, text="Type de Scan :")
 scan_type_var = tk.StringVar()
-scan_type_combobox = ttk.Combobox(root, textvariable=scan_type_var, values=["ICMP", "TCP", "UDP", "ARP"])
-scan_type_combobox.set("ICMP")
+scan_type_combobox = ttk.Combobox(root, textvariable=scan_type_var, values=["TCP", "UDP"])
+scan_type_combobox.set("TCP")
 
 ip_address_label = ttk.Label(root, text="Entrer l'Adresse IP ou la Plage :")
 ip_address_entry = ttk.Entry(root, font=('Arial', 12))
@@ -86,6 +86,4 @@ new_scan_button.grid(row=6, column=0, columnspan=2, pady=10)
 
 # Exécuter la boucle principale de Tkinter
 root.mainloop()
-
-
 
