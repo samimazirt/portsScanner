@@ -33,8 +33,6 @@ Le script doit prendre en charge les fonctionnalités suivantes :
 
     	- "-p x-y,z" : prendre en charge la combinaison de plages et de ports spécifiques. 
 
-    * Générer un rapport avec les résultats des scans. 
-
 #######################################
 
 Bonus 
@@ -60,8 +58,6 @@ Livrables
 Le projet doit inclure les éléments suivants : 
 
     * Git (script, readme, …) 
-
-    * Le rapport généré par le script. 
 
     * Présentation. 
 

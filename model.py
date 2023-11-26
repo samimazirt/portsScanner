@@ -26,7 +26,7 @@ def is_valid_ports(ports):
 
 
 def parse_ip_arg(ip_arg):
-    # initialize ip list to return
+    # initialisation de la liste ip à retourner
     ip_list = []
      
     if ',' in ip_arg:
@@ -54,16 +54,36 @@ def parse_ip_arg(ip_arg):
     return ip_list
 
 def parse_arguments():
+    # Création d'un objet ArgumentParser avec une description
     parser = argparse.ArgumentParser(description='Port Scanner')
 
-    # scan type parsing
-    parser.add_argument('-x', '--scan-type', required=True, choices=['a', 'i', 'u', 't'], help='Specify scan type (a, i, u, t)')
-    # ip address
-    parser.add_argument('-ip', '--ip', required=True, help='Input IP address, IP range, or CIDR notation')
-    # port si besoin
-    parser.add_argument('-p', '--ports', help='Specify ports to scan')
+    # Analyse des types de scan (a: ARP, i: ICMP, u: UDP, t: TCP)
+    parser.add_argument(
+        '-x', '--scan-type',
+        required=True,
+        metavar='SCAN_TYPE',
+        choices=['a', 'i', 'u', 't'],
+        help='Specify scan type (a, i, u, t)'
+        )
 
+    # Analyse de l'adresse IP
+    parser.add_argument(
+        '-ip', '--ip',
+        required=True,
+        metavar='IP_ADDRESS',
+        help='Input IP address, IP range'
+        )
+
+    # Analyse des ports à scanner (optionnel)
+    parser.add_argument(
+        '-p', '--ports',
+        help='Specify ports to scan'
+        )
+
+    # Analyse des arguments fournis à partir de la ligne de commande
     args = parser.parse_args()
+
+    # construction de notre modèle générique = dictionnaire
     return {
         'scan_type': args.scan_type,
         'ip': parse_ip_arg(args.ip),
@@ -71,13 +91,13 @@ def parse_arguments():
     }
 
 def parse_ports_arg(ports_arg):
-    # if no port Specified, return none
     if not ports_arg:
         return None
     if not is_valid_ports(ports_arg):
         logging.error('Not valid ports')
         sys.exit(1)    
-    # port list to return
+
+    # valeur à retourner => listes des ports
     ports_list = []
 
     if ',' in ports_arg:
